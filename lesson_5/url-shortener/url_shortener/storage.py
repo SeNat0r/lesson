@@ -1,5 +1,7 @@
 import sqlite3
 
+from .converter import convert, inverse
+
 SQL_SELECT = '''
     SELECT
         id, short_url, original_url, created
@@ -49,7 +51,7 @@ def add_url(conn, url, domain=''):
 
     # хитрая логика
     pk = cursor.lastrowid
-    short_url = ''
+    short_url = '{}/{}'.format(domain.strip('/'), convert(pk))
 
     conn.execute('''
         UPDATE shortiner SET short_url=? WHERE id=?

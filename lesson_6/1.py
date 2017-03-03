@@ -71,6 +71,21 @@ def benchmark(func):
         return result
     return wrapper
 
+# декоратор с аргументами
+def repeat(count):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            results = []
+
+            for i in range(count):
+                results.append(func(*args, **kwargs))
+
+            return results
+
+        return wrapper
+
+    return decorator
+
 @benchmark
 def factorial(x):
     f = 1
@@ -79,4 +94,13 @@ def factorial(x):
         f *= i
     return f
 
-factorial(100500)
+
+@repeat(5)
+@benchmark
+def do_something2():
+    print('777')
+
+factorial(100000)
+do_something2()
+
+
