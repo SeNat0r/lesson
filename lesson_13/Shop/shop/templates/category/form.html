@@ -1,0 +1,12 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/forms.html' as forms %}
+
+{% page_content %}
+    <form method="post">
+        {{ forms.render_field(form.python) }}
+        <div>
+            <input type="submit" value="OK">
+        </div>
+        {{ form.hidden_tag() }}
+    </form>
+{% endblock %}

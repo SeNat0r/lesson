@@ -1,0 +1,9 @@
+{
+  "SECRET_KEY": "12345789",
+  "WTF_CSRF_SECRET_KEY": "666",
+  "DB_TYPE": "sqlite",
+  "DB_CONFIG": {
+    "filename": "shop.sqlite",
+    "create_db": true
+  }
+}

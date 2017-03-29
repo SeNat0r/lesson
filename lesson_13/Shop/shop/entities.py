@@ -1,6 +1,6 @@
 from pony.orm import Database, Required, Optional, Set, db_session, show
-
-db = Database()
+from . import db
+# db = Database()
 
 
 class Photo(db.Entity):
@@ -47,11 +47,12 @@ class Order(db.Entity):
 # class Storage():
 #     storage_items = StorageItem[]
 
-db.bind('sqlite', ':memory:')
-db.generate_mapping(create_tables=True)
+# db.bind('sqlite', ':memory:')
+# db.generate_mapping(create_tables=True)
+#
+# with db_session:
+#     customer = Customer(username='atata@huyandex.ru', password='123', activated=True)
+#     order = Order(customer=customer)
+#     show(customer)
+#     show(order)
 
-with db_session:
-    customer = Customer(username='atata@huyandex.ru', password='123', activated=True)
-    order = Order(customer=customer)
-    show(customer)
-    show(order)
