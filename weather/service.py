@@ -73,19 +73,72 @@ class Finder(object):
 
 class WeatherGrabber(object):
     """Граббер и парсер данных с сервиса Яндекс-Погода"""
+    def __init__(self, region_id):
+        self.__region_id = region_id
+
+    def get_weather(self, search):
+        """Возвращает данные о погоде"""
+        # founder = Finder(Page('https://yandex.ru/pogoda/saint-petersburg'))
+        #
+        # temperature = founder('.current-weather__thermometer.current-weather__thermometer_type_now')
+        # print(temperature.text)
+        return {
+            'temperature': None,
+            'comment': None,
+            'forecast': None,
+            'wind_speed': None,
+            'wind_direction': None,
+            'wet': None,
+            'pressure': None
+        }
 
 
 class WeatherService(object):
     """Сервис погоды"""
 
+    TEMPALTE = """
+Сейчас: {temperature}, {comment}
+
+Прогноз на ближайшее время:
+{forecast}
+
+Ветер:      {wind_speed} ({wind_direction})
+Влажность:  {wet}
+Давление:   {pressure}
+    """
+
+    def __init__(self, region_id=225):
+        self.__grabber = WeatherGrabber(region_id)
+
     def show(self, search):
-        print(search)
+        context = self.__grabber.get_weather(search)
+        print(self.TEMPALTE.format(**context))
 
     def listen(self, ip, port):
-        founder = Finder(Page('https://yandex.ru/pogoda/saint-petersburg'))
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # Устанавливает опцию, при которой сокет будет переиспользовать адрес
+            s.bind((ip, port))
+            s.listen(1)
 
-        temperature = founder('.current-weather__thermometer.current-weather__thermometer_type_now')
-        print(temperature.text)
+        while True:
+            # Сокет подключившегося клиента, addr адрес клиента
+            conn, addr = s.accept()
+
+            with conn:
+                # чтение данных из сокета
+                search = conn.recv(1024).decode('utf-8')
+
+                if search:
+                    print('[{:%Y-%m-%d %H:%M:%S}] {} искомый город "{}"'.format(datetime.now(), addr, search))
+
+                    try:
+                        context = self.__grabber.get_weather(search)
+                        conn.send(self.TEMPALTE.format(**context).encode('utf-8'))
+                    except RuntimeError as e:
+                        conn.send('\n{}\n'.format(e).encode())
+
+
 
 if __name__ == '__main__':
     service = WeatherService()
