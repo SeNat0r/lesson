@@ -103,7 +103,7 @@ data = [
 # gen_squares = (i * i for i in numbers)
 # print(gen_squares)
 #
-# with open('1.py') as f:
+# with open('unittest_lesson.py') as f:
 #     lines = (line.strip() for line in f)
 #     linuses = (l for l in lines if 'linus torvalds' in l)
 #     # print(list(linuses))
